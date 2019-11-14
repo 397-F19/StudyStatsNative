@@ -8,6 +8,7 @@ import {
   ContributionGraph,
   StackedBarChart
 } from "react-native-chart-kit";
+import _ from 'lodash';
 import json from './public/data/assignments.json';
 
 const styles = StyleSheet.create({
@@ -19,32 +20,54 @@ const styles = StyleSheet.create({
   },
 });
 
+// given an assignment JSON, outputs median time for that assignment
+const median_time = assignment => {
+  const times = assignment.responses.map(response => response.time)
+                .sort((a, b) => a - b);
+  const mid = _.floor(times.length / 2);
+  return _.isEqual(times.length%2, 0) ? _.mean([times[mid-1], times[mid]]) : times[mid];
+}
+
+const getAssignmentNamesHours = classes => {
+  let assignmentNames = [];
+  let assignmentMedianHours = [];
+  classes.forEach(course => {
+    course.assignments.forEach(assignment => {
+      assignmentNames.push(course.id + " " + assignment.title);
+      assignmentMedianHours.push(median_time(assignment));
+    })
+  });
+
+  // complains when it's empty so give it dummy stuff, should update right away
+  if (assignmentNames.length == 0) {
+    assignmentNames.push("a");
+    assignmentMedianHours.push(0);
+  }
+  return { assignmentNames, assignmentMedianHours };
+}
 
 const Graph = ({ state }) => {
+  let { assignmentNames, assignmentMedianHours } = getAssignmentNamesHours(state.classes);
+  console.log(assignmentNames);
+  console.log(assignmentMedianHours);
+
   return (
     <View style={styles.container}>
       <Text>Bezier Line Chart</Text>
       {/* TODO: CONVERT TO BAR, GET IT WORKING WITH OUR DATA */}
       <LineChart
         data={{
-          labels: ["January", "February", "March", "April", "May", "June"],
+          labels: assignmentNames,
           datasets: [
             {
-              data: [
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100
-              ]
+              data: assignmentMedianHours
             }
           ]
         }}
         width={Dimensions.get("window").width} // from react-native
         height={220}
-        yAxisLabel={"$"}
-        yAxisSuffix={"k"}
+        // yAxisLabel={"$"}
+        yAxisSuffix={"hrs"}
         chartConfig={{
           backgroundColor: "#e26a00",
           backgroundGradientFrom: "#fb8c00",
