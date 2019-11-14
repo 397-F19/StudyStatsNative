@@ -1,90 +1,96 @@
 {
-    "courses": [
-      {
-        "id": "EECS 336",
-        "title": "Algorithms",
-        "assignments": [
-          {
-            "id": "1",
-            "title": "Assignment 1",
-            "completed": "false",
-            "week": 1,
-            "responses": [
-              {
-                "time": 8,
-                "comment": "This was easier if you know dynamic programming concepts beforehand."
-              },
-              {
-                "time": 12,
-                "comment": "I didn't know dynamic programming so this assignment was challenging for me."
-              }
-            ]
-          },
-          {
-            "id": "2",
-            "title": "Assignment 2",
-            "completed": "false",
-            "week": 1,
-            "responses": [
-              {
-                "time": 3,
-                "comment": "There was only one problem this week, and it was easy since it was the first reductions assignment."
-              },
-              {
-                "time": 5,
-                "comment": "Although there was only one problem this week, there was also a midterm, which stressed me out."
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "EECS 211",
-        "title": "Intro to OOP",
-        "assignments": [
-          {
-            "id": "1",
-            "title": "Lab 1",
-            "completed": "false",
-            "week": 1,
-            "responses": [
-              {
-                "time": 8,
-                "comment": ""
-              },
-              {
-                "time": 12,
-                "comment": "This was my second CS class, so I'm still trying to figure things out."
-              },
-              {
-                "time": 4,
-                "comment": "I've been coding since middle school, so I already knew object-oriented programming."
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "EECS 213",
-        "title": "Data Structures",
-        "assignments": [
-          {
-            "id": "1",
-            "title": "HW 1",
-            "completed": "false",
-            "week": 1,
-            "responses": [
-              {
-                "time": 2,
-                "comment": "This was pretty straightforward, in my opinion."
-              },
-              {
-                "time": 8,
-                "comment": "This was my first time dealing with pointers, so this was challenging."
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+  "courses": [
+    {
+      "id": "EECS 336",
+      "title": "Algorithms",
+      "assignments": [
+        {
+          "id": "1",
+          "title": "Assignment 1",
+          "completed": "false",
+          "week": 1,
+          "responses": [
+            {
+              "time": 8,
+              "comment": "This was easier if you know dynamic programming concepts beforehand."
+            },
+            {
+              "time": 12,
+              "comment": "I didn't know dynamic programming so this assignment was challenging for me."
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "title": "Assignment 2",
+          "completed": "false",
+          "week": 1,
+          "responses": [
+            {
+              "time": 3,
+              "comment": "There was only one problem this week, and it was easy since it was the first reductions assignment."
+            },
+            {
+              "time": 5,
+              "comment": "Although there was only one problem this week, there was also a midterm, which stressed me out."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EECS 211",
+      "title": "Intro to OOP",
+      "assignments": [
+        {
+          "id": "1",
+          "title": "Lab 1",
+          "completed": "false",
+          "week": 1,
+          "responses": [
+            {
+              "time": 8,
+              "comment": ""
+            },
+            {
+              "time": 12,
+              "comment": "This was my second CS class, so I'm still trying to figure things out."
+            },
+            {
+              "time": 4,
+              "comment": "I've been coding since middle school, so I already knew object-oriented programming."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EECS 213",
+      "title": "Data Structures",
+      "assignments": [
+        {
+          "id": "1",
+          "title": "HW 1",
+          "completed": "false",
+          "week": 1,
+          "responses": [
+            {
+              "time": 2,
+              "comment": "This was pretty straightforward, in my opinion."
+            },
+            {
+              "time": 8,
+              "comment": "This was my first time dealing with pointers, so this was challenging."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "name": "Lorem",
+      "courses": ["EECS 336", "EECS 211"]
+    }
+  ]
+}
