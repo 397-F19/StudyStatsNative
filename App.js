@@ -64,7 +64,7 @@ const Graph = ({ state }) => {
         fromZero={true}
         width={Dimensions.get("window").width * .90} // from react-native
         height={Dimensions.get("window").height * .80}
-        yAxisSuffix={"hrs"}
+        yAxisSuffix={" hrs"}
         verticalLabelRotation={90}
         chartConfig={{
           backgroundColor: "#e26a00",
