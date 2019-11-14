@@ -6,7 +6,7 @@ import {
   PieChart,
   ProgressChart,
   ContributionGraph,
-  StackedBarChart
+  StackedBarChart,
 } from "react-native-chart-kit";
 import _ from 'lodash';
 import json from './public/data/assignments.json';
@@ -53,9 +53,9 @@ const Graph = ({ state }) => {
 
   return (
     <View style={styles.container}>
-      <Text>Bezier Line Chart</Text>
+      <Text>Median Hours Bar Graph</Text>
       {/* TODO: CONVERT TO BAR, GET IT WORKING WITH OUR DATA */}
-      <LineChart
+      <BarChart
         data={{
           labels: assignmentNames,
           datasets: [
@@ -65,9 +65,10 @@ const Graph = ({ state }) => {
           ]
         }}
         width={Dimensions.get("window").width} // from react-native
-        height={220}
+        height={Dimensions.get("window").height}
         // yAxisLabel={"$"}
         yAxisSuffix={"hrs"}
+        verticalLabelRotation={90}
         chartConfig={{
           backgroundColor: "#e26a00",
           backgroundGradientFrom: "#fb8c00",
@@ -78,11 +79,9 @@ const Graph = ({ state }) => {
           style: {
             borderRadius: 16
           },
-          propsForDots: {
-            r: "6",
-            strokeWidth: "2",
-            stroke: "#ffa726"
-          }
+          // propsForLabels: {
+          //   rotation: 90,
+          // }
         }}
         // bezier
         style={{
