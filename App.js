@@ -48,13 +48,10 @@ const getAssignmentNamesHours = classes => {
 
 const Graph = ({ state }) => {
   let { assignmentNames, assignmentMedianHours } = getAssignmentNamesHours(state.classes);
-  console.log(assignmentNames);
-  console.log(assignmentMedianHours);
 
   return (
     <View style={styles.container}>
       <Text>Median Hours Bar Graph</Text>
-      {/* TODO: CONVERT TO BAR, GET IT WORKING WITH OUR DATA */}
       <BarChart
         data={{
           labels: assignmentNames,
@@ -64,26 +61,22 @@ const Graph = ({ state }) => {
             }
           ]
         }}
-        width={Dimensions.get("window").width} // from react-native
-        height={Dimensions.get("window").height}
-        // yAxisLabel={"$"}
+        fromZero={true}
+        width={Dimensions.get("window").width * .90} // from react-native
+        height={Dimensions.get("window").height * .80}
         yAxisSuffix={"hrs"}
         verticalLabelRotation={90}
         chartConfig={{
           backgroundColor: "#e26a00",
           backgroundGradientFrom: "#fb8c00",
           backgroundGradientTo: "#ffa726",
-          decimalPlaces: 2, // optional, defaults to 2dp
+          decimalPlaces: 0, // optional, defaults to 2dp
           color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
           labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
           style: {
             borderRadius: 16
           },
-          // propsForLabels: {
-          //   rotation: 90,
-          // }
         }}
-        // bezier
         style={{
           marginVertical: 8,
           borderRadius: 16
