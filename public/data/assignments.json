@@ -11,32 +11,12 @@
           "week": 1,
           "responses": [
             {
-              "time": 7,
-              "comment": "This was easier if you know dynamic programming concepts beforehand, but I had to learn how to write proofs."
-            },
-            {
-              "time": 18,
-              "comment": "I didn't know dynamic programming so this assignment was challenging for me."
+              "time": 8,
+              "comment": "This was easier if you know dynamic programming concepts beforehand."
             },
             {
               "time": 12,
-              "comment": "Dynamic programming was new to me, but I went to OH early on so I eventually got it."
-            },
-            {
-              "time": 5,
-              "comment": "I had seen dynampic programming in interview prep before, so I didn't have to learn it from scratch."
-            },
-            {
-              "time": 16,
-              "comment": "This was awful – definitely go to class and pay as much attention as you can (oops)! Dynamic programming was new for me."
-            },
-            {
-              "time": 20,
-              "comment": "Yup, I think I'm dropping the class. I read the textbook, went to OH, spent a ton of time on the HW, but I just couldn't grasp dynamic programming."
-            },
-            {
-              "time": 13,
-              "comment": "I didn't know there would be two problems a week. One was really challenging, and the other easier, but by no means a walk in the park."
+              "comment": "I didn't know dynamic programming so this assignment was challenging for me."
             }
           ]
         },
@@ -48,27 +28,11 @@
           "responses": [
             {
               "time": 3,
-              "comment": "There was only one reduction problem this week, and it was easy since it was the first reductions assignment."
-            },
-            {
-              "time": 5.5,
-              "comment": "Although there was only one reduction problem this week, there was also a midterm, which stressed me out."
-            },
-            {
-              "time": 6,
-              "comment": "Phew! Only one problem this week (on reductions). I had been struggling with the other assignments."
-            },
-            {
-              "time": 4,
-              "comment": "Honestly, I spent more time writing up the proof than figuring out how to do the single reduction this week."
+              "comment": "There was only one problem this week, and it was easy since it was the first reductions assignment."
             },
             {
               "time": 5,
-              "comment": "This was a nice relative break as the homework was lighter, but the midterm was also this week."
-            },
-            {
-              "time": 10,
-              "comment": "This was the first reductions homework, and this is the concept I've struggled the most with in this class so far."
+              "comment": "Although there was only one problem this week, there was also a midterm, which stressed me out."
             }
           ]
         }
@@ -85,28 +49,16 @@
           "week": 1,
           "responses": [
             {
+              "time": 8,
+              "comment": ""
+            },
+            {
+              "time": 12,
+              "comment": "This was my second CS class, so I'm still trying to figure things out."
+            },
+            {
               "time": 4,
-              "comment": "This was a pretty chill homework, but I guess I already knew the fundamental OOP concepts from before."
-            },
-            {
-              "time": 14,
-              "comment": "This was my only second CS class since I just switched majors, so I'm still trying to figure things out. I hate semicolons!"
-            },
-            {
-              "time": 3,
               "comment": "I've been coding since middle school, so I already knew object-oriented programming."
-            },
-            {
-              "time": 5,
-              "comment": "Definitely manageable. The concept of classes made sense to me, but took more effort actually implementing something."
-            },
-            {
-              "time": 6,
-              "comment": "I loved doing this assignment! It was relatively challenging, but I felt like I learned a lot."
-            },
-            {
-              "time": 2,
-              "comment": "I skipped this class as an underclassman, but now I had to take as a senior to finish my requirements, so this was easy for me."
             }
           ]
         }
@@ -124,23 +76,11 @@
           "responses": [
             {
               "time": 2,
-              "comment": "This was pretty straightforward, in my opinion. The assignment was on linked lists."
+              "comment": "This was pretty straightforward, in my opinion."
             },
             {
               "time": 8,
-              "comment": "This was my first time dealing with pointers, so this was challenging to implement a linked list."
-            },
-            {
-              "time": 5,
-              "comment": "Challenging, but interesting. After the struggle to identify all the edge cases for linked lists, it was pretty smooth to code up."
-            },
-            {
-              "time": 3,
-              "comment": "I knew the concepts of pointers from before, but I learned how to use the debugging tools for the first time in this homework (linked lists)."
-            },
-            {
-              "time": 5.5,
-              "comment": "I finished implementing linked lists quickly and it compiled and worked on almost all of my test cases. It ended up being a tiny bug (check your parantheses!)."
+              "comment": "This was my first time dealing with pointers, so this was challenging."
             }
           ]
         }
