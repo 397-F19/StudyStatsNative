@@ -1,8 +1,8 @@
 import React, { Component, useState, useEffect } from 'react';
-import { Form, Item, Input, Content, Container, Picker, Header, Left, Body, Right, Title, Card, CardItem, Text, Button } from 'native-base';
-import { StyleSheet, View, Modal, Dimensions, ScrollView } from 'react-native';
+import { Form, Item, Input, Content, Container, Header, Left, Body, Picker, Right, Title, Card, CardItem, Text, Button } from 'native-base';
+import { StyleSheet, View, Dimensions, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
-//import Modal from "react-native-modal";
+import Modal from "react-native-modal";
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import {
   LineChart,
@@ -15,6 +15,7 @@ import {
 import _ from 'lodash';
 import json from './public/data/assignments.json';
 const week = 1;
+
 
 const Nav = () => (
     <View>
@@ -31,13 +32,24 @@ const Nav = () => (
 const styles = StyleSheet.create({
   scrollView: {
     marginHorizontal: 20,
-  }
+  },
+  fixToText: {
+    flexDirection: 'row',
+    marginHorizontal: 140
+  },
+  recommendation: {
+    fontWeight: "bold",
+    color: "#FF0000",
+  },
+  addClass: {
+    backgroundColor: "#007bff",
+  },
 });
 
 //This is the component that included the Upcoming Week section
 const UpcomingWeek = () => {
   return (
-    <CardItem>
+    <React.Fragment>
       <CardItem header>
         <Text>Upcoming Week </Text>
       </CardItem>
@@ -47,7 +59,7 @@ const UpcomingWeek = () => {
             <Picker.Item onValueChange={() => setBar(false)} label="Individual Times" value="key1"/>
           </Picker>
       </CardItem> */}
-    </CardItem>
+    </React.Fragment>
   )
 }
 const CurrClasses = ({classes, allClasses}) => {
@@ -105,47 +117,31 @@ const CurrClasses = ({classes, allClasses}) => {
                   <CardItem button onPress={() => handleShow(currClass, currAssignment)}><Text>{currClass.title} - {currAssignment.title}</Text></CardItem>
                   </Card>
                 </React.Fragment>))}
-                <AddClasses classes={classes} allClasses={allClasses}/>
+                <Text>{"\n"}</Text>
                 <View>
-                  <Modal visible={showLog} onRequestClose={handleClose} animationType="slide">
+                <AddClasses classes={classes} allClasses={allClasses}/>
+                </View>
+                <View>
+                  <Modal avoidKeyboard={true} keyboardShouldPersistTaps={'handled'} onBackdropPress={() => handleClose()} isVisible={showLog} onPress={handleClose}>
                     <View>
-                      <Text>Did it update</Text>
+                      <Card>
+                      <Form>
+                        <Item>
+                          <Input placeholder="Hours Spent"/>
+                        </Item>
+                        <Item last>
+                          <Input placeholder="Comments on Assignment"/>
+                        </Item>
+                      </Form>
+                      </Card>
+                      <View style={styles.fixToText}>
+                      <Button onPress={() => handleSubmit(logItem)} primary><Text>Submit</Text></Button>
+                      </View>
                     </View>
-                  
-                  {/* <Form>
-                    <Item>
-                      <Input placeholder="Hours"/>
-                    </Item>
-                    <Item last>
-                      <Input placeholder="Comment"/>
-                    </Item>
-                  </Form> */}
-                </Modal>
+                  </Modal>
                 </View>
           </Body>
         </CardItem>
-
-        
-          {/* <Card.Text>
-
-            <Modal show={showLog} onHide={handleClose}>
-              <Modal.Header closeButton>
-                <Modal.Title>Enter hours spent to complete this assignment:</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <Form>
-                  <Form.Group controlId="exampleForm.ControlTextarea1">
-                    <Form.Control as="textarea" rows="2" />
-                  </Form.Group>
-                </Form>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button onClick={() => handleSubmit(logItem)} variant="success">
-                  Submit
-                </Button>
-              </Modal.Footer>
-            </Modal>
-          </Card.Text> */}
       </Card>
   );
 };
@@ -165,11 +161,15 @@ const Recommendations = ({state}) => {
   if (state.classes[0].assignments.length === 0) {
     cardText = "Congrats! You have no more assignments."
   }
+  let hardest_class;
+  let hardest_assignment;
   for (let i = 0; i < state.classes.length; i += 1) {
     for (let j = 0; j < state.classes[i].assignments.length; j += 1) {
-      let median_time_spent = median_time(state.classes[i].assignments[j]);
+      median_time_spent = median_time(state.classes[i].assignments[j]);
       if (median_time_spent > maxHours) {
         maxHours = median_time_spent;
+        hardest_class = state.classes[i].title;
+        hardest_assignment = state.classes[i].assignments[j].title;
         cardText = "Past students have spent " + median_time_spent + " hours on " + state.classes[i].title + " - " + state.classes[i].assignments[j].title + ". We recommend you start this one first!";
       }
     }
@@ -181,7 +181,12 @@ const Recommendations = ({state}) => {
       </CardItem>
       <CardItem>
         <Body>
-          <Text>{cardText}</Text>
+          <Text>Past students have spent 
+          <Text style={styles.recommendation}> {maxHours} </Text>
+          hours on
+          <Text style={styles.recommendation}> {hardest_class} - {hardest_assignment}. </Text>
+          We recommend you start this one first!
+          </Text>
         </Body>
       </CardItem>
     </Card>
@@ -290,11 +295,12 @@ const AddClasses = ({classes, allClasses}) => {
   };
   // when assignment button is clicked, bring up modal and track which class/assignment it is
     return (
-      <Button>
-      <Picker placeholder="Add Classes" mode="dropdown">
-        <Picker.Item onValueChange={() => setBar(true)} label="Data Structures" value="key0"/>
+      <Picker placeholderStyle={{ color: "#fff" }} style={styles.addClass} onValueChange={() => handleSubmit(classes, allClasses)} placeholder="Add Classes" mode="dropdown">
+        <Picker.Item label="Data Structures" value="key0"/>
+        <Picker.Item label="Artificial Intelligence" value="key1"/>
+        <Picker.Item label="Introduction to Material Science" value="key2"/>
+        <Picker.Item label="Fundamentals of Computer Programming" value="key3"/>
       </Picker>
-      </Button>
     )
 };
 
@@ -304,8 +310,9 @@ const Graph = ({ state }) => {
   return (
     <Card>
       <UpcomingWeek />
+      <CardItem>
       <View>
-        <Text>Median Hours Bar Graph</Text>
+        <Text>Median Hours Spent on Assignments</Text>
         <BarChart
           data={{
             labels: assignmentNames,
@@ -321,12 +328,12 @@ const Graph = ({ state }) => {
           yAxisSuffix={" hrs"}
           verticalLabelRotation={90}
           chartConfig={{
-            backgroundColor: "#e26a00",
-            backgroundGradientFrom: "#fb8c00",
-            backgroundGradientTo: "#ffa726",
+            backgroundColor: "#a9a9a9",
+            backgroundGradientFrom: "#ffafbd",
+            backgroundGradientTo: "#ffc3a0",
             decimalPlaces: 0, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            color: (opacity = 1) => `rgba(67, 70, 75, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(67, 70, 75, ${opacity})`,
             style: {
               borderRadius: 16
             },
@@ -337,6 +344,7 @@ const Graph = ({ state }) => {
           }}
         />
       </View>
+      </CardItem>
     </Card>
   );
 }
@@ -359,19 +367,11 @@ function App() {
   }, [])
   return (
     <Content>
-    <ScrollView style={styles.scrollView} contentContainerStyle={{flexGrow:1}}>
-    <React.Fragment>
+    <ScrollView>
       <Nav/>
-      <Container>
         <CurrClasses key={classes.title} classes={{classes, setClasses}} allClasses={{allClasses, setAllClasses}}/>
-        {/* <Graph key={classes.title} state={{classes, setClasses}}/> */}
+        <Graph key={classes.title} state={{classes, setClasses}}/>
         <Recommendations state={{classes, setClasses}}/>
-        <Recommendations state={{classes, setClasses}}/>
-        <Recommendations state={{classes, setClasses}}/>
-        <Recommendations state={{classes, setClasses}}/>
-        <Recommendations state={{classes, setClasses}}/>
-      </Container>
-    </React.Fragment>
     </ScrollView>
     </Content>
   );

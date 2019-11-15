@@ -85,6 +85,72 @@
           ]
         }
       ]
+    },
+    {
+      "id": "EECS 340",
+      "title": "Artificial Intelligence",
+      "assignments": [
+        {
+          "id": "1",
+          "title": "Lab 1",
+          "completed": "false",
+          "week": 1,
+          "responses": [
+            {
+              "time": 5,
+              "comment": "Hard"
+            },
+            {
+              "time": 10,
+              "comment": "Prepare for this one"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "MATSCI 201",
+      "title": "Introduction to Material Science",
+      "assignments": [
+        {
+          "id": "1",
+          "title": "HW 2",
+          "completed": "false",
+          "week": 1,
+          "responses": [
+            {
+              "time": 2,
+              "comment": "This was pretty straightforward, in my opinion."
+            },
+            {
+              "time": 5,
+              "comment": "Very duable"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EECS 111",
+      "title": "Fundamentals of Computer Programming",
+      "assignments": [
+        {
+          "id": "1",
+          "title": "Lab 1",
+          "completed": "false",
+          "week": 1,
+          "responses": [
+            {
+              "time": 4,
+              "comment": "This was pretty straightforward."
+            },
+            {
+              "time": 5,
+              "comment": "Fun assignment!"
+            }
+          ]
+        }
+      ]
     }
   ],
   "users": [
