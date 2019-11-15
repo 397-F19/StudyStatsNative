@@ -1,7 +1,8 @@
 import React, { Component, useState, useEffect } from 'react';
-import { Form, Item, Input, Container,Picker, Header, Left, Body, Right, Title, Card, CardItem, Text, Button } from 'native-base';
-import { StyleSheet, View, Dimensions } from 'react-native';
-import Modal from "react-native-modal";
+import { Form, Item, Input, Content, Container, Picker, Header, Left, Body, Right, Title, Card, CardItem, Text, Button } from 'native-base';
+import { StyleSheet, View, Modal, Dimensions, ScrollView } from 'react-native';
+import Constants from 'expo-constants';
+//import Modal from "react-native-modal";
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import {
   LineChart,
@@ -16,7 +17,7 @@ import json from './public/data/assignments.json';
 const week = 1;
 
 const Nav = () => (
-    <Container>
+    <View>
       <Header>
         <Left/>
         <Body>
@@ -24,8 +25,14 @@ const Nav = () => (
         </Body>
         <Right />
       </Header>
-    </Container>
+    </View>
 );
+
+const styles = StyleSheet.create({
+  scrollView: {
+    marginHorizontal: 20,
+  }
+});
 
 //This is the component that included the Upcoming Week section
 const UpcomingWeek = () => {
@@ -34,14 +41,12 @@ const UpcomingWeek = () => {
       <CardItem header>
         <Text>Upcoming Week </Text>
       </CardItem>
-      <CardItem>
-        {/* <Button> */}
+      {/* <CardItem>
           <Picker placeholder="Select Chart Types" mode="dropdown">
             <Picker.Item onValueChange={() => setBar(true)} label="Median Times" value="key0"/>
             <Picker.Item onValueChange={() => setBar(false)} label="Individual Times" value="key1"/>
           </Picker>
-        {/* </Button> */}
-      </CardItem>
+      </CardItem> */}
     </CardItem>
   )
 }
@@ -102,10 +107,10 @@ const CurrClasses = ({classes, allClasses}) => {
                 </React.Fragment>))}
                 <AddClasses classes={classes} allClasses={allClasses}/>
                 <View>
-                <Modal isVisible={showLog} onPress={handleClose}>
-                  <View style={{ flex: 1 }}>
-                  <Text>Did it update</Text>
-                  </View>
+                  <Modal visible={showLog} onRequestClose={handleClose} animationType="slide">
+                    <View>
+                      <Text>Did it update</Text>
+                    </View>
                   
                   {/* <Form>
                     <Item>
@@ -285,10 +290,11 @@ const AddClasses = ({classes, allClasses}) => {
   };
   // when assignment button is clicked, bring up modal and track which class/assignment it is
     return (
-      <Button><Text>Hello</Text></Button>
-      // <Picker  className="dropdownButton" title="Add Another Class">
-      //   <Picker.Item className="addClassItem btn-primary" onValueChange={() => handleSubmit(classes, allClasses)}>Data Structures</Picker.Item>
-      // </Picker>
+      <Button>
+      <Picker placeholder="Add Classes" mode="dropdown">
+        <Picker.Item onValueChange={() => setBar(true)} label="Data Structures" value="key0"/>
+      </Picker>
+      </Button>
     )
 };
 
@@ -296,7 +302,7 @@ const Graph = ({ state }) => {
   let { assignmentNames, assignmentMedianHours } = getAssignmentNamesHours(state.classes);
 
   return (
-    <React.Fragment>
+    <Card>
       <UpcomingWeek />
       <View>
         <Text>Median Hours Bar Graph</Text>
@@ -331,7 +337,7 @@ const Graph = ({ state }) => {
           }}
         />
       </View>
-    </React.Fragment>
+    </Card>
   );
 }
 
@@ -352,14 +358,22 @@ function App() {
     fetchClasses();
   }, [])
   return (
+    <Content>
+    <ScrollView style={styles.scrollView} contentContainerStyle={{flexGrow:1}}>
     <React.Fragment>
       <Nav/>
       <Container>
         <CurrClasses key={classes.title} classes={{classes, setClasses}} allClasses={{allClasses, setAllClasses}}/>
-        <Graph key={classes.title} state={{classes, setClasses}}/>
+        {/* <Graph key={classes.title} state={{classes, setClasses}}/> */}
+        <Recommendations state={{classes, setClasses}}/>
+        <Recommendations state={{classes, setClasses}}/>
+        <Recommendations state={{classes, setClasses}}/>
+        <Recommendations state={{classes, setClasses}}/>
         <Recommendations state={{classes, setClasses}}/>
       </Container>
     </React.Fragment>
+    </ScrollView>
+    </Content>
   );
 };
 
