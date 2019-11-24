@@ -27,7 +27,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f5fcff"
+    backgroundColor: "#f5fcff",
+    flexDirection:'row', 
+    flex: 1, 
+    flexWrap: 'wrap',
+    flexShrink: 1
   }
 });
 
@@ -254,7 +258,7 @@ const getScatterData = classes => {
         let datum = {
           assignmentName: name,
           time: response.time,
-          label: response.comment
+          label: tooltip_comment_wrapper(response.comment)
         };
         data.push(datum);
       });
@@ -267,6 +271,20 @@ const getScatterData = classes => {
   }
 
   return data;
+}
+
+const tooltip_comment_wrapper = comment => {
+  let result = "";
+  const words = comment.split(' ');
+
+  for (let i = 0; i < words.length; i += 1) {
+    result = result + " " + words[i];
+    if (i % 5 == 0 && i != 0) {
+      result = result + "\n";
+    }
+  }
+
+  return result;
 }
 
 const AddClasses = ({classes, allClasses}) => {
@@ -381,23 +399,27 @@ function App() {
     // </View>
 
       <View style={styles.container}>
-        <Svg width={400} height={500}>
-          <VictoryChart width={400} height={500}
-            standalone={false}
-            innerRadius={125}
-            labelRadius={250}
-            containerComponent={<VictoryVoronoiContainer/>}>
-              <VictoryScatter
-              style={{
-                data: {fill: "purple"}, labels: {fill: "purple"}
-              }}
-              size={({active }) => active ? 20 : 10}
-              labels={({ datum }) => datum.y}
-              labelComponent={<VictoryTooltip renderInPortal={false}/>}
-              animate={{duration: 1500}}
-              data={data} x="assignmentName" y="time" />
-            </VictoryChart>
-          </Svg>
+        <VictoryChart width={350} height={500}
+          // standalone={false}
+          // innerRadius={125}
+          // labelRadius={250}
+          //style={{parent: {overflow: 'visible'}}}
+          containerComponent={<VictoryVoronoiContainer/>}
+          >
+            <VictoryScatter
+            style={{
+              data: {fill: "purple"}, labels: {fill: "purple"}
+            }}
+            size={({active }) => active ? 20 : 10}
+            labels={({ datum }) => datum.y}
+            labelComponent={<VictoryTooltip constrainToVisibleArea
+              // style={{ flexShrink: 1 }}
+              // renderInPortal={true}
+              // cornerRadius={0}
+              />}
+            animate={{duration: 1500}}
+            data={data} x="assignmentName" y="time" />
+          </VictoryChart>
       </View>
   );
 
@@ -412,5 +434,8 @@ function App() {
   //   </Content>
   // );
 };
+
+
+
 
 export default App;
