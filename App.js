@@ -14,7 +14,9 @@ import {
 } from "react-native-chart-kit";
 import _ from 'lodash';
 import json from './public/data/assignments.json';
-import { VictoryBar, VictoryChart, VictoryTheme, VictoryScatter } from "victory-native";
+import { VictoryBar, VictoryChart, VictoryTheme, VictoryScatter, VictoryVoronoiContainer, VictoryTooltip } from "victory-native";
+import Svg from 'react-native-svg';
+
 
 const week = 1;
 
@@ -372,11 +374,31 @@ function App() {
   // for Scatter
   let data = getScatterData(classes);
   return (
-    <View style={styles.container}>
-      <VictoryChart width={350}>
-        <VictoryScatter data={data} x="assignmentName" y="time" />
-      </VictoryChart>
-    </View>
+    // <View style={styles.container}>
+    //   <VictoryChart width={350}>
+    //     <VictoryScatter data={data} x="assignmentName" y="time" />
+    //   </VictoryChart>
+    // </View>
+
+      <View style={styles.container}>
+        <Svg width={400} height={500}>
+          <VictoryChart width={400} height={500}
+            standalone={false}
+            innerRadius={75}
+            labelRadius={125}
+            containerComponent={<VictoryVoronoiContainer/>}>
+              <VictoryScatter
+              style={{
+                data: {fill: "tomato"}, labels: {fill: "tomato"}
+              }}
+              size={({active }) => active ? 20 : 10}
+              labels={({ datum }) => datum.y}
+              labelComponent={<VictoryTooltip renderInPortal={false}/>}
+              animate={{duration: 1500}}
+              data={data} x="assignmentName" y="time" />
+            </VictoryChart>
+          </Svg>
+      </View>
   );
 
   // return (
