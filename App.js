@@ -254,7 +254,7 @@ const getScatterData = classes => {
         let datum = {
           assignmentName: name,
           time: response.time,
-          comment: response.comment
+          label: response.comment
         };
         data.push(datum);
       });
@@ -384,12 +384,12 @@ function App() {
         <Svg width={400} height={500}>
           <VictoryChart width={400} height={500}
             standalone={false}
-            innerRadius={75}
-            labelRadius={125}
+            innerRadius={125}
+            labelRadius={250}
             containerComponent={<VictoryVoronoiContainer/>}>
               <VictoryScatter
               style={{
-                data: {fill: "tomato"}, labels: {fill: "tomato"}
+                data: {fill: "purple"}, labels: {fill: "purple"}
               }}
               size={({active }) => active ? 20 : 10}
               labels={({ datum }) => datum.y}
