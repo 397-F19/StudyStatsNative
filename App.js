@@ -195,40 +195,58 @@ const Recommendations = ({state}) => {
   )
 };
 
-const getBarData = classes => {
-  let data = [];
-  let maxMedianHours = 0;
-  let recommendedClass = "";
+// const getBarData = classes => {
+//   let data = [];
+//   let maxMedianHours = 0;
+//   let recommendedClass = "";
 
-  classes.forEach(course => {
-    course.assignments.forEach(assignment => {
-      let name = course.id + " " + assignment.title;
-      let medianHours = median_time(assignment);
+//   classes.forEach(course => {
+//     course.assignments.forEach(assignment => {
+//       let name = course.id + " " + assignment.title;
+//       let medianHours = median_time(assignment);
 
-      if (medianHours > maxMedianHours) {
-        maxMedianHours = medianHours;
-        recommendedClass = name;
-      }
+//       if (medianHours > maxMedianHours) {
+//         maxMedianHours = medianHours;
+//         recommendedClass = name;
+//       }
 
-      let datum = { 
-        assignmentName: name,
-        assignmentMedianHours: medianHours
-      };
-      data.push(datum);
-    });
-  });
+//       let datum = { 
+//         assignmentName: name,
+//         assignmentMedianHours: medianHours
+//       };
+//       data.push(datum);
+//     });
+//   });
 
-  // complains when it's empty so give it dummy stuff, should update right away
-  if (data.length === 0) {
-    data.push({ assignmentName: "a", assignmentMedianHours: 0 });
-  }
+//   // complains when it's empty so give it dummy stuff, should update right away
+//   if (data.length === 0) {
+//     data.push({ assignmentName: "a", assignmentMedianHours: 0 });
+//   }
 
-  // color one with most time
-  data.forEach(datum => {
-    datum.fill = datum.assignmentName === recommendedClass ? 'red' : 'black';
-  });
+//   // color one with most time
+//   data.forEach(datum => {
+//     datum.fill = datum.assignmentName === recommendedClass ? 'red' : 'black';
+//   });
 
-  return data;
+//   return data;
+// }
+
+const getAssignmentNamesHours = classes => {
+    let assignmentNames = [];
+    let assignmentMedianHours = [];
+    classes.forEach(course => {
+      course.assignments.forEach(assignment => {
+        assignmentNames.push(course.id + " " + assignment.title);
+        assignmentMedianHours.push(median_time(assignment));
+      })
+    });
+  
+    // complains when it's empty so give it dummy stuff, should update right away
+    if (assignmentNames.length == 0) {
+      assignmentNames.push("a");
+      assignmentMedianHours.push(0);
+    }
+    return { assignmentNames, assignmentMedianHours };
 }
 
 const getScatterData = classes => {
@@ -298,12 +316,45 @@ const AddClasses = ({classes, allClasses}) => {
 };
 
 const Graph = ({ state }) => {
-  let scatterData = getScatterData(state.classes)
-  let barData = getBarData(state.classes)
+  let { assignmentNames, assignmentMedianHours } = getAssignmentNamesHours(state.classes);
+  let scatterData = getScatterData(state.classes)
+  // let barData = getBarData(state.classes)
 
   return (
     <Card>
       <UpcomingWeek />
+      <CardItem>
+      <BarChart
+          data={{
+            labels: assignmentNames,
+            datasets: [
+              {
+                data: assignmentMedianHours
+              }
+            ]
+          }}
+          fromZero={true}
+          width={Dimensions.get("window").width * .90} // from react-native
+          height={Dimensions.get("window").height * .80}
+          yAxisSuffix={" hrs"}
+          verticalLabelRotation={90}
+          chartConfig={{
+            backgroundColor: "#a9a9a9",
+            backgroundGradientFrom: "#ffafbd",
+            backgroundGradientTo: "#ffc3a0",
+            decimalPlaces: 0, // optional, defaults to 2dp
+            color: (opacity = 1) => `rgba(67, 70, 75, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(67, 70, 75, ${opacity})`,
+            style: {
+              borderRadius: 16
+            },
+          }}
+          style={{
+            marginVertical: 8,
+            borderRadius: 16
+          }}
+        />
+      </CardItem>
       <CardItem>
       <View style={styles.container}>
         <VictoryChart width={350} height={500}
@@ -319,18 +370,6 @@ const Graph = ({ state }) => {
             data={scatterData} x="assignmentName" y="time" />
           </VictoryChart>
       </View>
-      </CardItem>
-      <CardItem>
-      <View style={styles.container}>
-          <VictoryChart width={350}>
-            <VictoryBar data={barData} x="assignmentName" y="assignmentMedianHours"
-                    style={{
-                      data: {
-                        fill: ({ datum }) => datum.fill,
-                      }
-                    }} />
-          </VictoryChart>
-        </View>
       </CardItem>
     </Card>
   );
