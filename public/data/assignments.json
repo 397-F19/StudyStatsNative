@@ -15,7 +15,7 @@
               "comment": "This was easier if you know dynamic programming concepts beforehand."
             },
             {
-              "time": 12,
+              "time": 11,
               "comment": "I didn't know dynamic programming so this assignment was challenging for me."
             }
           ]
@@ -31,8 +31,16 @@
               "comment": "There was only one problem this week, and it was easy since it was the first reductions assignment."
             },
             {
-              "time": 5,
-              "comment": "Although there was only one problem this week, there was also a midterm, which stressed me out."
+              "time": 4,
+              "comment": ""
+            },
+            {
+              "time": 4.5,
+              "comment": "Although there was only one problem this week, there was also a midterm, which stressed me out a little."
+            },
+            {
+              "time": 12,
+              "comment": "This was on reductions, and since that was super new to me, I struggled a LOT, especially since there was also a midterm."
             }
           ]
         }
@@ -53,7 +61,7 @@
               "comment": ""
             },
             {
-              "time": 12,
+              "time": 10,
               "comment": "This was my second CS class, so I'm still trying to figure things out."
             },
             {
