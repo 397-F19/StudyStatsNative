@@ -315,41 +315,111 @@ const AddClasses = ({classes, allClasses}) => {
     )
 };
 
+// const GraphBar = ({state}) => {
+//   let barData = getBarData(state.classes)
+
+//   return (
+//   <Card>
+//     <CardItem>
+//       <View style={styles.container}>
+//         <VictoryChart width={350} domainPadding={30}>
+//           <VictoryBar data={barData } x="assignmentName" y="assignmentMedianHours"
+//             style={{
+//               data: {
+//                 fill: ({ datum }) => datum.fill,
+//               }
+//             }} />
+//         </VictoryChart>
+//       </View>
+//     </CardItem>  
+//   </Card>
+//   );
+// }
+
+// GraphScatter = ({state}) => {
+//   let scatterData = getScatterData(state.classes);
+   
+//   return (
+//     <CardItem>
+//       <View style={styles.container}>
+//         <VictoryChart width={350} height={500} domainPadding={30}
+//           containerComponent={<VictoryVoronoiContainer/>}>
+//             <VictoryScatter
+//             style={{
+//               data: {fill: "purple"}, labels: {fill: "purple"}
+//             }}
+//             size={({active }) => active ? 20 : 10}
+//             labels={({ datum }) => datum.y}
+//             labelComponent={<VictoryTooltip constrainToVisibleArea/>}
+//             animate={{duration: 1500}}
+//             data={scatterData } x="assignmentName" y="time" />
+//           </VictoryChart>
+//       </View>
+//       </CardItem>
+//   );
+// }
+
 const Graph = ({ state }) => {
-  let scatterData = getScatterData(state.classes)
+  const [useBar, setBar] = useState(true);
+  let scatterData = getScatterData(state.classes)
   let barData = getBarData(state.classes)
+
+  
 
   return (
     <Card>
       <UpcomingWeek />
-      <CardItem>
-      <View style={styles.container}>
-       <VictoryChart width={350} domainPadding={30}>
-         <VictoryBar data={barData} x="assignmentName" y="assignmentMedianHours"
-            style={{
-              data: {
-                fill: ({ datum }) => datum.fill,
-              }
-            }} />
-      </VictoryChart>
-     </View>
-     </CardItem>      
-      <CardItem>
-      <View style={styles.container}>
-        <VictoryChart width={350} height={500} domainPadding={30}
-          containerComponent={<VictoryVoronoiContainer/>}>
-            <VictoryScatter
-            style={{
-              data: {fill: "purple"}, labels: {fill: "purple"}
-            }}
-            size={({active }) => active ? 20 : 10}
-            labels={({ datum }) => datum.y}
-            labelComponent={<VictoryTooltip constrainToVisibleArea/>}
-            animate={{duration: 1500}}
-            data={scatterData} x="assignmentName" y="time" />
-          </VictoryChart>
-      </View>
-      </CardItem>
+      {/* <Picker
+        placeholderStyle={{ color: "#fff" }}
+        mode="dropdown"
+        iosHeader="Select View"
+        // iosIcon={<Icon name="arrow-down" />}
+        style={{ width: undefined }}
+        selectedValue={this.state.selectedValue}
+        onValueChange={() => {
+          if(this.state.selectedValue === "Median Times"){
+            setBar(true);
+          } else {
+            setBar(false);
+          }
+        }}
+      >
+        <Picker.Item label="Median Times" value="key0" />
+        <Picker.Item label="Individual Times" value="key1" />
+      </Picker>
+      <div className={"chart-container"}>
+        { useBar ? */}
+          <CardItem>
+          <View style={styles.container}>
+            <VictoryChart width={350} domainPadding={30}>
+              <VictoryBar data={barData } x="assignmentName" y="assignmentMedianHours"
+                style={{
+                  data: {
+                    fill: ({ datum }) => datum.fill,
+                  }
+                }} />
+            </VictoryChart>
+          </View>
+        </CardItem> 
+        {/* :  */}
+        <CardItem>
+        <View style={styles.container}>
+          <VictoryChart width={350} height={500} domainPadding={30}
+            containerComponent={<VictoryVoronoiContainer/>}>
+              <VictoryScatter
+              style={{
+                data: {fill: "purple"}, labels: {fill: "purple"}
+              }}
+              size={({active }) => active ? 20 : 10}
+              labels={({ datum }) => datum.y}
+              labelComponent={<VictoryTooltip constrainToVisibleArea/>}
+              animate={{duration: 1500}}
+              data={scatterData } x="assignmentName" y="time" />
+            </VictoryChart>
+        </View>
+        </CardItem>
+        {/* } 
+      </div>  */}
     </Card>
   );
 }
