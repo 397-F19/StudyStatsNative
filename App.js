@@ -16,6 +16,7 @@ import { VictoryBar, VictoryChart, VictoryTheme, VictoryScatter, VictoryVoronoiC
 import Svg from 'react-native-svg';
 import _ from 'lodash';
 import json from './public/data/assignments.json';
+import { Z_BLOCK } from 'zlib';
 const week = 1;
 
 
@@ -45,6 +46,10 @@ const styles = StyleSheet.create({
   },
   addClass: {
     backgroundColor: "#007bff",
+  },
+  Button: {
+    width: 50,
+    display: 'inline-block',
   },
 });
 
@@ -364,31 +369,16 @@ const Graph = ({ state }) => {
   let scatterData = getScatterData(state.classes)
   let barData = getBarData(state.classes)
 
-  
+  
 
   return (
     <Card>
       <UpcomingWeek />
-      {/* <Picker
-        placeholderStyle={{ color: "#fff" }}
-        mode="dropdown"
-        iosHeader="Select View"
-        // iosIcon={<Icon name="arrow-down" />}
-        style={{ width: undefined }}
-        selectedValue={this.state.selectedValue}
-        onValueChange={() => {
-          if(this.state.selectedValue === "Median Times"){
-            setBar(true);
-          } else {
-            setBar(false);
-          }
-        }}
-      >
-        <Picker.Item label="Median Times" value="key0" />
-        <Picker.Item label="Individual Times" value="key1" />
-      </Picker>
-      <div className={"chart-container"}>
-        { useBar ? */}
+      <Button style={styles.Button} onPress={() => setBar(true)}><Text>Median Time View</Text></Button>
+      <Button style={styles.Button} onPress={() => setBar(false) } ><Text>Individual Time View</Text></Button>
+      
+      <Container className={"my-pretty-chart-container"}>
+        { useBar ? 
           <CardItem>
           <View style={styles.container}>
             <VictoryChart width={350} domainPadding={30}>
@@ -401,7 +391,7 @@ const Graph = ({ state }) => {
             </VictoryChart>
           </View>
         </CardItem> 
-        {/* :  */}
+         : 
         <CardItem>
         <View style={styles.container}>
           <VictoryChart width={350} height={500} domainPadding={30}
@@ -418,8 +408,8 @@ const Graph = ({ state }) => {
             </VictoryChart>
         </View>
         </CardItem>
-        {/* } 
-      </div>  */}
+        }
+      </Container> 
     </Card>
   );
 }
