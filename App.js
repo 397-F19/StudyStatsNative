@@ -16,7 +16,7 @@ import { VictoryBar, VictoryChart, VictoryTheme, VictoryScatter, VictoryVoronoiC
 import Svg from 'react-native-svg';
 import _ from 'lodash';
 import json from './public/data/assignments.json';
-import { Z_BLOCK } from 'zlib';
+// import { Z_BLOCK } from 'zlib';
 const week = 1;
 
 
@@ -48,9 +48,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#007bff",
   },
   Button: {
-    width: 50,
-    display: 'inline-block',
+    marginLeft: 3,
+    marginRight: 3
   },
+  container: {
+  flex: 2,
+  flexDirection: 'row',
+  justifyContent: 'space-between'
+},
+mainContainer: {
+  height: 450
+}
 });
 
 //This is the component that included the Upcoming Week section
@@ -117,8 +125,8 @@ const CurrClasses = ({classes, allClasses}) => {
         </CardItem>
         <CardItem>
           <Body>
-                {classes.classes.map(currClass => 
-                currClass.assignments.map(currAssignment => 
+                {classes.classes.map(currClass =>
+                currClass.assignments.map(currAssignment =>
                 <React.Fragment key={currAssignment.title}>
                   <Card>
                   <CardItem button onPress={() => handleShow(currClass, currAssignment)}><Text>{currClass.title} - {currAssignment.title}</Text></CardItem>
@@ -188,7 +196,7 @@ const Recommendations = ({state}) => {
       </CardItem>
       <CardItem>
         <Body>
-          <Text>Past students have spent 
+          <Text>Past students have spent
           <Text style={styles.recommendation}> {maxHours} </Text>
           hours on
           <Text style={styles.recommendation}> {hardest_class} - {hardest_assignment}. </Text>
@@ -215,7 +223,7 @@ const getBarData = classes => {
         recommendedClass = name;
       }
 
-      let datum = { 
+      let datum = {
         assignmentName: name,
         assignmentMedianHours: medianHours
       };
@@ -245,7 +253,7 @@ const getAssignmentNamesHours = classes => {
         assignmentMedianHours.push(median_time(assignment));
       })
     });
-  
+
     // complains when it's empty so give it dummy stuff, should update right away
     if (assignmentNames.length == 0) {
       assignmentNames.push("a");
@@ -336,14 +344,14 @@ const AddClasses = ({classes, allClasses}) => {
 //             }} />
 //         </VictoryChart>
 //       </View>
-//     </CardItem>  
+//     </CardItem>
 //   </Card>
 //   );
 // }
 
 // GraphScatter = ({state}) => {
 //   let scatterData = getScatterData(state.classes);
-   
+
 //   return (
 //     <CardItem>
 //       <View style={styles.container}>
@@ -369,19 +377,20 @@ const Graph = ({ state }) => {
   let scatterData = getScatterData(state.classes)
   let barData = getBarData(state.classes)
 
-  
+
 
   return (
     <Card>
       <UpcomingWeek />
-      <Button style={styles.Button} onPress={() => setBar(true)}><Text>Median Time View</Text></Button>
-      <Button style={styles.Button} onPress={() => setBar(false) } ><Text>Individual Time View</Text></Button>
-      
-      <Container className={"my-pretty-chart-container"}>
-        { useBar ? 
+      <View style={styles.container}>
+        <Button style={styles.Button} onPress={() => setBar(true)}><Text>Median Time View</Text></Button>
+        <Button style={styles.Button} onPress={() => setBar(false) } ><Text>Individual Time View</Text></Button>
+      </View>
+      <Container style={styles.mainContainer} className={"my-pretty-chart-container"}>
+        { useBar ?
           <CardItem>
           <View style={styles.container}>
-            <VictoryChart width={350} domainPadding={30}>
+            <VictoryChart height={400} width={350} domainPadding={30}>
               <VictoryBar data={barData } x="assignmentName" y="assignmentMedianHours"
                 style={{
                   data: {
@@ -390,11 +399,11 @@ const Graph = ({ state }) => {
                 }} />
             </VictoryChart>
           </View>
-        </CardItem> 
-         : 
+        </CardItem>
+         :
         <CardItem>
         <View style={styles.container}>
-          <VictoryChart width={350} height={500} domainPadding={30}
+          <VictoryChart width={350} height={400} domainPadding={30}
             containerComponent={<VictoryVoronoiContainer/>}>
               <VictoryScatter
               style={{
@@ -409,7 +418,7 @@ const Graph = ({ state }) => {
         </View>
         </CardItem>
         }
-      </Container> 
+      </Container>
     </Card>
   );
 }
@@ -424,7 +433,7 @@ function App() {
     const fetchClasses= async () => {
       setAllClasses(json.courses);
       let userCourses = json.users[0].courses;
-      setClasses(json.courses.filter(course => 
+      setClasses(json.courses.filter(course =>
         userCourses.includes(course.id)));
 
     }
