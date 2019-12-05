@@ -1,20 +1,10 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Item, Input, Content, Container, Header, Left, Body, Picker, Right, Title, Card, CardItem, Text, Button } from 'native-base';
-import { StyleSheet, View, Dimensions, ScrollView } from 'react-native';
-import Constants from 'expo-constants';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import Modal from "react-native-modal";
-import { Col, Row, Grid } from 'react-native-easy-grid';
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart,
-} from "react-native-chart-kit";
+import { VictoryBar, VictoryChart, VictoryScatter, VictoryVoronoiContainer, VictoryTooltip, VictoryLabel } from "victory-native";
 import _ from 'lodash';
 import json from './public/data/assignments.json';
-const week = 1;
 
 import * as firebase from 'firebase';
 
@@ -58,6 +48,18 @@ const styles = StyleSheet.create({
   addClass: {
     backgroundColor: "#007bff",
   },
+  Button: {
+    marginLeft: 3,
+    marginRight: 3
+  },
+  container: {
+  flex: 2,
+  flexDirection: 'row',
+  justifyContent: 'space-between'
+},
+mainContainer: {
+  height: 450
+}
 });
 
 //This is the component that included the Upcoming Week section
@@ -67,12 +69,6 @@ const UpcomingWeek = () => {
       <CardItem header>
         <Text>Upcoming Week </Text>
       </CardItem>
-      {/* <CardItem>
-          <Picker placeholder="Select Chart Types" mode="dropdown">
-            <Picker.Item onValueChange={() => setBar(true)} label="Median Times" value="key0"/>
-            <Picker.Item onValueChange={() => setBar(false)} label="Individual Times" value="key1"/>
-          </Picker>
-      </CardItem> */}
     </React.Fragment>
   )
 }
@@ -207,89 +203,98 @@ const Recommendations = ({state}) => {
   )
 };
 
-const getAssignmentNamesHours = classes => {
-  let assignmentNames = [];
-  let assignmentMedianHours = [];
+const getBarData = classes => {
+  let data = [];
+  let maxMedianHours = 0;
+  let recommendedClass = "";
+
   classes.forEach(course => {
     course.assignments.forEach(assignment => {
-      assignmentNames.push(course.id + " " + assignment.title);
-      assignmentMedianHours.push(median_time(assignment));
-    })
+      let name = course.id + "\n" + assignment.title;
+      let medianHours = median_time(assignment);
+
+      if (medianHours > maxMedianHours) {
+        maxMedianHours = medianHours;
+        recommendedClass = name;
+      }
+
+      let datum = {
+        assignmentName: name,
+        assignmentMedianHours: medianHours
+      };
+      data.push(datum);
+    });
   });
 
   // complains when it's empty so give it dummy stuff, should update right away
-  if (assignmentNames.length == 0) {
-    assignmentNames.push("a");
-    assignmentMedianHours.push(0);
+  if (data.length === 0) {
+    data.push({ assignmentName: "a", assignmentMedianHours: 0 });
   }
-  return { assignmentNames, assignmentMedianHours };
+
+  // color one with most time
+  data.forEach(datum => {
+    datum.fill = datum.assignmentName === recommendedClass ? 'red' : 'black';
+  });
+
+  return data;
 }
 
-const getBarData = (data, state) => {
-  let dueSoon = "";
-  let maxHours = 0;
-  const options = {
-    title: "This Week's Assignments",
-    legend: {position: 'none'},
-    vAxis: {
-      title: "Median Hours",
-      titleTextStyle: {
-        italic: false
-      }
-    }
-  };
-  for (let i = 0; i < state.classes.length; i += 1) {
-    const assignments = state.classes[i].assignments;
-    for (let j = 0; j < assignments.length; j += 1) {
-      const assignment = assignments[j];
-      const median_time_spent = median_time(assignment);
-      if (_.isEqual(assignment.week, week)) {
-        if (median_time_spent > maxHours){
-          maxHours = median_time_spent;
-          dueSoon = state.classes[i].title + " " + assignment.title;
-        }
-        data.push([state.classes[i].title + " " + assignment.title, median_time_spent, ''])
-      }
-    }
-  }
-  for (let i = 0; i < data.length; i += 1){
-    if (_.isEqual(data[i][0], dueSoon)) {
-      data[i][2] = 'red';
-    }
-  }
-  return [data, options];
+const getAssignmentNamesHours = classes => {
+    let assignmentNames = [];
+    let assignmentMedianHours = [];
+    classes.forEach(course => {
+      course.assignments.forEach(assignment => {
+        assignmentNames.push(course.id + " " + assignment.title);
+        assignmentMedianHours.push(median_time(assignment));
+      })
+    });
+
+    // complains when it's empty so give it dummy stuff, should update right away
+    if (assignmentNames.length == 0) {
+      assignmentNames.push("a");
+      assignmentMedianHours.push(0);
+    }
+    return { assignmentNames, assignmentMedianHours };
 }
 
-const getScatterData = (data, state) => {
-  let ticks = [];
-  let count = 0;
-  for (let i = 0; i < state.classes.length; i += 1) {
-    let assignment;
-    const assignments = state.classes[i].assignments;
-    for (let j = 0; j < assignments.length; j += 1) {
-      let responses = [];
-      assignment = assignments[j];
+const getScatterData = classes => {
+  let data = [];
 
-      for(let k = 0; k < assignment.responses.length; k++){
-        let response = assignment.responses[k];
-        data.push([{v: count, f: (state.classes[i].title + " " + assignment.title)}, response.time, response.comment, '' ])
-      }
-      ticks.push({v: count, f:(state.classes[i].title + " " + assignment.title)})
-      count++;
+  classes.forEach(course => {
+    course.assignments.forEach(assignment => {
+      assignment.responses.forEach(response => {
+        let name = course.id + "\n" + assignment.title;
+
+        let datum = {
+          assignmentName: name,
+          time: response.time,
+          label: tooltip_comment_wrapper(response.comment)
+        };
+        data.push(datum);
+      });
+    });
+  });
+
+  // if empty, give dummy stuff, should update right away.
+  if (data.length === 0) {
+    data.push({assignmentName: "a", time: 0, comment: "b" });
+  }
+
+  return data;
+}
+
+const tooltip_comment_wrapper = comment => {
+  let result = "";
+  const words = comment.split(' ');
+
+  for (let i = 0; i < words.length; i += 1) {
+    result = result + " " + words[i];
+    if (i % 5 == 0 && i != 0) {
+      result = result + "\n";
     }
   }
-  const options = {
-    title: "This Week's Assignments",
-    legend: {position: 'none'},
-    hAxis: {ticks : ticks },
-    vAxis: {
-      title: "Hours Spent",
-      titleTextStyle: {
-        italic: false
-      }
-    }
-  };
-  return [data, options];
+
+  return result;
 }
 
 const AddClasses = ({classes, allClasses}) => {
@@ -320,46 +325,53 @@ const AddClasses = ({classes, allClasses}) => {
 };
 
 const Graph = ({ state }) => {
-  let { assignmentNames, assignmentMedianHours } = getAssignmentNamesHours(state.classes);
+  const [useBar, setBar] = useState(true);
+  let scatterData = getScatterData(state.classes)
+  let barData = getBarData(state.classes)
+
+
 
   return (
     <Card>
       <UpcomingWeek />
-      <CardItem>
-      <View>
-        <Text>Median Hours Spent on Assignments</Text>
-        <BarChart
-          data={{
-            labels: assignmentNames,
-            datasets: [
-              {
-                data: assignmentMedianHours
-              }
-            ]
-          }}
-          fromZero={true}
-          width={Dimensions.get("window").width * .90} // from react-native
-          height={Dimensions.get("window").height * .80}
-          yAxisSuffix={" hrs"}
-          verticalLabelRotation={90}
-          chartConfig={{
-            backgroundColor: "#a9a9a9",
-            backgroundGradientFrom: "#ffafbd",
-            backgroundGradientTo: "#ffc3a0",
-            decimalPlaces: 0, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(67, 70, 75, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(67, 70, 75, ${opacity})`,
-            style: {
-              borderRadius: 16
-            },
-          }}
-          style={{
-            marginVertical: 8,
-            borderRadius: 16
-          }}
-        />
+      <View style={styles.container}>
+        <Button style={styles.Button} disabled={useBar} onPress={() => setBar(true)}><Text>View Median Times</Text></Button>
+        <Button style={styles.Button} disabled={!useBar} onPress={() => setBar(false) } ><Text>View Comments</Text></Button>
       </View>
-      </CardItem>
+      <Container style={styles.mainContainer} className={"my-pretty-chart-container"}>
+        { useBar ?
+          <CardItem>
+          <View style={styles.container}>
+            <VictoryChart height={400} width={350} domainPadding={30}>
+              <VictoryBar data={barData } x="assignmentName" y="assignmentMedianHours"
+                style={{
+                  data: {
+                    fill: ({ datum }) => datum.fill,
+                  }
+                }} />
+            </VictoryChart>
+          </View>
+        </CardItem>
+         :
+        <CardItem>
+        <View style={styles.container}>
+          <VictoryChart width={350} height={400} domainPadding={30}
+            containerComponent={<VictoryVoronoiContainer/>}>
+              <VictoryLabel text="Hover over points to view past students' comments!" x={175} y={20} textAnchor="middle"/>
+              <VictoryScatter
+              style={{
+                data: {fill: "purple"}, labels: {fill: "purple"}
+              }}
+              size={({active }) => active ? 20 : 10}
+              labels={({ datum }) => datum.y}
+              labelComponent={<VictoryTooltip constrainToVisibleArea/>}
+              animate={{duration: 1500}}
+              data={scatterData } x="assignmentName" y="time" />
+            </VictoryChart>
+        </View>
+        </CardItem>
+        }
+      </Container>
     </Card>
   );
 }
@@ -371,6 +383,12 @@ function App() {
   const url = '/data/assignments.json';
 
   useEffect(() => {
+    const fetchClasses= async () => {
+      setAllClasses(json.courses);
+      let userCourses = json.users[0].courses;
+      setClasses(json.courses.filter(course =>
+        userCourses.includes(course.id)));
+    })
     db.ref('/').on('value', (snapshot) => {
       const data = snapshot.val();
       setAllClasses(data.courses);
