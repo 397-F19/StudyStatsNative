@@ -4,7 +4,6 @@ import { StyleSheet, View, ScrollView } from 'react-native';
 import Modal from "react-native-modal";
 import { VictoryBar, VictoryChart, VictoryScatter, VictoryVoronoiContainer, VictoryTooltip, VictoryLabel } from "victory-native";
 import _ from 'lodash';
-import json from './public/data/assignments.json';
 
 import * as firebase from 'firebase';
 
@@ -78,7 +77,6 @@ const CurrClasses = ({classes, allClasses}) => {
   const [showLog, setShowLog] = useState(false);
 
   // tracks the assignment that is clicked for completion
-  // logItem = [currentClass, currentAssignment]
   const [logItem, setLogItem] = useState([{id: "", title: "", assignments: []}, {id: "", title: "", completed: "", responses: []}]);
 
   const handleClose = () => setShowLog(false);
@@ -380,15 +378,8 @@ function App() {
   // list of classes with assignments you have yet to complete
   const [classes, setClasses] = useState([{id: "", title: "", assignments: []}])
   const [allClasses, setAllClasses] = useState([{id: "", title: "", assignments: []}])
-  const url = '/data/assignments.json';
 
   useEffect(() => {
-    const fetchClasses= async () => {
-      setAllClasses(json.courses);
-      let userCourses = json.users[0].courses;
-      setClasses(json.courses.filter(course =>
-        userCourses.includes(course.id)));
-    })
     db.ref('/').on('value', (snapshot) => {
       const data = snapshot.val();
       setAllClasses(data.courses);
@@ -396,15 +387,7 @@ function App() {
       setClasses(data.courses.filter(course =>
         userCourses.includes(course.id)));
     })
-    // const fetchClasses= async () => {
-    //   setAllClasses(json.courses);
-    //   let userCourses = json.users[0].courses;
-    //   setClasses(json.courses.filter(course =>
-    //     userCourses.includes(course.id)));
-
-    // }
-    // fetchClasses();
-  }, [])
+  }, []);
   return (
     <Content>
     <ScrollView>
