@@ -1,23 +1,10 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Item, Input, Content, Container, Header, Left, Body, Picker, Right, Title, Card, CardItem, Text, Button } from 'native-base';
-import { StyleSheet, View, Dimensions, ScrollView } from 'react-native';
-import Constants from 'expo-constants';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import Modal from "react-native-modal";
-import { Col, Row, Grid } from 'react-native-easy-grid';
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart,
-} from "react-native-chart-kit";
-import { VictoryBar, VictoryChart, VictoryTheme, VictoryScatter, VictoryVoronoiContainer, VictoryTooltip, VictoryAxis } from "victory-native";
-import Svg from 'react-native-svg';
+import { VictoryBar, VictoryChart, VictoryScatter, VictoryVoronoiContainer, VictoryTooltip, VictoryLabel } from "victory-native";
 import _ from 'lodash';
 import json from './public/data/assignments.json';
-// import { Z_BLOCK } from 'zlib';
-const week = 1;
 
 
 const Nav = () => (
@@ -68,12 +55,6 @@ const UpcomingWeek = () => {
       <CardItem header>
         <Text>Upcoming Week </Text>
       </CardItem>
-      {/* <CardItem>
-          <Picker placeholder="Select Chart Types" mode="dropdown">
-            <Picker.Item onValueChange={() => setBar(true)} label="Median Times" value="key0"/>
-            <Picker.Item onValueChange={() => setBar(false)} label="Individual Times" value="key1"/>
-          </Picker>
-      </CardItem> */}
     </React.Fragment>
   )
 }
@@ -328,50 +309,6 @@ const AddClasses = ({classes, allClasses}) => {
     )
 };
 
-// const GraphBar = ({state}) => {
-//   let barData = getBarData(state.classes)
-
-//   return (
-//   <Card>
-//     <CardItem>
-//       <View style={styles.container}>
-//         <VictoryChart width={350} domainPadding={30}>
-//           <VictoryBar data={barData } x="assignmentName" y="assignmentMedianHours"
-//             style={{
-//               data: {
-//                 fill: ({ datum }) => datum.fill,
-//               }
-//             }} />
-//         </VictoryChart>
-//       </View>
-//     </CardItem>
-//   </Card>
-//   );
-// }
-
-// GraphScatter = ({state}) => {
-//   let scatterData = getScatterData(state.classes);
-
-//   return (
-//     <CardItem>
-//       <View style={styles.container}>
-//         <VictoryChart width={350} height={500} domainPadding={30}
-//           containerComponent={<VictoryVoronoiContainer/>}>
-//             <VictoryScatter
-//             style={{
-//               data: {fill: "purple"}, labels: {fill: "purple"}
-//             }}
-//             size={({active }) => active ? 20 : 10}
-//             labels={({ datum }) => datum.y}
-//             labelComponent={<VictoryTooltip constrainToVisibleArea/>}
-//             animate={{duration: 1500}}
-//             data={scatterData } x="assignmentName" y="time" />
-//           </VictoryChart>
-//       </View>
-//       </CardItem>
-//   );
-// }
-
 const Graph = ({ state }) => {
   const [useBar, setBar] = useState(true);
   let scatterData = getScatterData(state.classes)
@@ -383,8 +320,8 @@ const Graph = ({ state }) => {
     <Card>
       <UpcomingWeek />
       <View style={styles.container}>
-        <Button style={styles.Button} onPress={() => setBar(true)}><Text>Median Time View</Text></Button>
-        <Button style={styles.Button} onPress={() => setBar(false) } ><Text>Individual Time View</Text></Button>
+        <Button style={styles.Button} disabled={useBar} onPress={() => setBar(true)}><Text>View Median Times</Text></Button>
+        <Button style={styles.Button} disabled={!useBar} onPress={() => setBar(false) } ><Text>View Comments</Text></Button>
       </View>
       <Container style={styles.mainContainer} className={"my-pretty-chart-container"}>
         { useBar ?
@@ -405,6 +342,7 @@ const Graph = ({ state }) => {
         <View style={styles.container}>
           <VictoryChart width={350} height={400} domainPadding={30}
             containerComponent={<VictoryVoronoiContainer/>}>
+              <VictoryLabel text="Hover over points to view past students' comments!" x={175} y={20} textAnchor="middle"/>
               <VictoryScatter
               style={{
                 data: {fill: "purple"}, labels: {fill: "purple"}
