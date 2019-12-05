@@ -6,6 +6,20 @@ import { VictoryBar, VictoryChart, VictoryScatter, VictoryVoronoiContainer, Vict
 import _ from 'lodash';
 import json from './public/data/assignments.json';
 
+import * as firebase from 'firebase';
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCxr2r7s6EoUToxqRQXl8FQKD2hO3C-MeU",
+    authDomain: "studystats-dc89b.firebaseapp.com",
+    databaseURL: "https://studystats-dc89b.firebaseio.com",
+    projectId: "studystats-dc89b",
+    storageBucket: "studystats-dc89b.appspot.com",
+    messagingSenderId: "375239972113",
+    appId: "1:375239972113:web:7a682f5d73ed5bd33628b0"
+};
+
+const app = firebase.initializeApp(firebaseConfig);
+const db = app.database();
 
 const Nav = () => (
     <View>
@@ -286,25 +300,26 @@ const tooltip_comment_wrapper = comment => {
 const AddClasses = ({classes, allClasses}) => {
   // when you add a class, the new class list include all previous classes
   // plus the one submitted
-  const handleSubmit = (classes, allClasses) => {
+  const handleSubmit = (classes, allClasses, title) => {
     let newClasses = [];
     for (let i = 0; i < classes.classes.length; i += 1) {
         newClasses.push(classes.classes[i])
     }
     for (let i = 0; i < allClasses.allClasses.length; i += 1) {
-        if (allClasses.allClasses[i].title == "Data Structures") {
+        if (allClasses.allClasses[i].title == title) {
           newClasses.push(allClasses.allClasses[i])
         }
     }
     classes.setClasses(newClasses);
   };
+  const avalClasses = allClasses.allClasses.filter(course =>
+    !classes.classes.includes(course));
   // when assignment button is clicked, bring up modal and track which class/assignment it is
     return (
-      <Picker placeholderStyle={{ color: "#fff" }} style={styles.addClass} onValueChange={() => handleSubmit(classes, allClasses)} placeholder="Add Classes" mode="dropdown">
-        <Picker.Item label="Data Structures" value="key0"/>
-        <Picker.Item label="Artificial Intelligence" value="key1"/>
-        <Picker.Item label="Introduction to Material Science" value="key2"/>
-        <Picker.Item label="Fundamentals of Computer Programming" value="key3"/>
+      <Picker placeholderStyle={{ color: "#fff" }} style={styles.addClass} onValueChange={(title) => handleSubmit(classes, allClasses, title)} placeholder="Add Classes" mode="dropdown">
+          {avalClasses.map(avalClass =>
+              <Picker.Item key={avalClass.id} label={avalClass.title} value={avalClass.title}/>)
+          }
       </Picker>
     )
 };
@@ -373,9 +388,22 @@ function App() {
       let userCourses = json.users[0].courses;
       setClasses(json.courses.filter(course =>
         userCourses.includes(course.id)));
+    })
+    db.ref('/').on('value', (snapshot) => {
+      const data = snapshot.val();
+      setAllClasses(data.courses);
+      const userCourses = data.users[0].courses;
+      setClasses(data.courses.filter(course =>
+        userCourses.includes(course.id)));
+    })
+    // const fetchClasses= async () => {
+    //   setAllClasses(json.courses);
+    //   let userCourses = json.users[0].courses;
+    //   setClasses(json.courses.filter(course =>
+    //     userCourses.includes(course.id)));
 
-    }
-    fetchClasses();
+    // }
+    // fetchClasses();
   }, [])
   return (
     <Content>
