@@ -31,7 +31,6 @@ const firebaseConfig = {
 const app = firebase.initializeApp(firebaseConfig);
 const db = app.database();
 
-
 const Nav = () => (
     <View>
       <Header>
@@ -125,8 +124,8 @@ const CurrClasses = ({classes, allClasses}) => {
         </CardItem>
         <CardItem>
           <Body>
-                {classes.classes.map(currClass => 
-                currClass.assignments.map(currAssignment => 
+                {classes.classes.map(currClass =>
+                currClass.assignments.map(currAssignment =>
                 <React.Fragment key={currAssignment.title}>
                   <Card>
                   <CardItem button onPress={() => handleShow(currClass, currAssignment)}><Text>{currClass.title} - {currAssignment.title}</Text></CardItem>
@@ -196,7 +195,7 @@ const Recommendations = ({state}) => {
       </CardItem>
       <CardItem>
         <Body>
-          <Text>Past students have spent 
+          <Text>Past students have spent
           <Text style={styles.recommendation}> {maxHours} </Text>
           hours on
           <Text style={styles.recommendation}> {hardest_class} - {hardest_assignment}. </Text>
@@ -296,25 +295,26 @@ const getScatterData = (data, state) => {
 const AddClasses = ({classes, allClasses}) => {
   // when you add a class, the new class list include all previous classes
   // plus the one submitted
-  const handleSubmit = (classes, allClasses) => {
+  const handleSubmit = (classes, allClasses, title) => {
     let newClasses = [];
     for (let i = 0; i < classes.classes.length; i += 1) {
         newClasses.push(classes.classes[i])
     }
     for (let i = 0; i < allClasses.allClasses.length; i += 1) {
-        if (allClasses.allClasses[i].title == "Data Structures") {
+        if (allClasses.allClasses[i].title == title) {
           newClasses.push(allClasses.allClasses[i])
         }
     }
     classes.setClasses(newClasses);
   };
+  const avalClasses = allClasses.allClasses.filter(course =>
+    !classes.classes.includes(course));
   // when assignment button is clicked, bring up modal and track which class/assignment it is
     return (
-      <Picker placeholderStyle={{ color: "#fff" }} style={styles.addClass} onValueChange={() => handleSubmit(classes, allClasses)} placeholder="Add Classes" mode="dropdown">
-        <Picker.Item label="Data Structures" value="key0"/>
-        <Picker.Item label="Artificial Intelligence" value="key1"/>
-        <Picker.Item label="Introduction to Material Science" value="key2"/>
-        <Picker.Item label="Fundamentals of Computer Programming" value="key3"/>
+      <Picker placeholderStyle={{ color: "#fff" }} style={styles.addClass} onValueChange={(title) => handleSubmit(classes, allClasses, title)} placeholder="Add Classes" mode="dropdown">
+          {avalClasses.map(avalClass =>
+              <Picker.Item key={avalClass.id} label={avalClass.title} value={avalClass.title}/>)
+          }
       </Picker>
     )
 };
@@ -375,13 +375,13 @@ function App() {
       const data = snapshot.val();
       setAllClasses(data.courses);
       const userCourses = data.users[0].courses;
-      setClasses(data.courses.filter(course => 
+      setClasses(data.courses.filter(course =>
         userCourses.includes(course.id)));
     })
     // const fetchClasses= async () => {
     //   setAllClasses(json.courses);
     //   let userCourses = json.users[0].courses;
-    //   setClasses(json.courses.filter(course => 
+    //   setClasses(json.courses.filter(course =>
     //     userCourses.includes(course.id)));
 
     // }
