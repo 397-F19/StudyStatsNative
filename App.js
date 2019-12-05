@@ -16,6 +16,21 @@ import _ from 'lodash';
 import json from './public/data/assignments.json';
 const week = 1;
 
+import * as firebase from 'firebase';
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCxr2r7s6EoUToxqRQXl8FQKD2hO3C-MeU",
+    authDomain: "studystats-dc89b.firebaseapp.com",
+    databaseURL: "https://studystats-dc89b.firebaseio.com",
+    projectId: "studystats-dc89b",
+    storageBucket: "studystats-dc89b.appspot.com",
+    messagingSenderId: "375239972113",
+    appId: "1:375239972113:web:7a682f5d73ed5bd33628b0"
+};
+
+const app = firebase.initializeApp(firebaseConfig);
+const db = app.database();
+
 
 const Nav = () => (
     <View>
@@ -356,14 +371,21 @@ function App() {
   const url = '/data/assignments.json';
 
   useEffect(() => {
-    const fetchClasses= async () => {
-      setAllClasses(json.courses);
-      let userCourses = json.users[0].courses;
-      setClasses(json.courses.filter(course => 
+    db.ref('/').on('value', (snapshot) => {
+      const data = snapshot.val();
+      setAllClasses(data.courses);
+      const userCourses = data.users[0].courses;
+      setClasses(data.courses.filter(course => 
         userCourses.includes(course.id)));
+    })
+    // const fetchClasses= async () => {
+    //   setAllClasses(json.courses);
+    //   let userCourses = json.users[0].courses;
+    //   setClasses(json.courses.filter(course => 
+    //     userCourses.includes(course.id)));
 
-    }
-    fetchClasses();
+    // }
+    // fetchClasses();
   }, [])
   return (
     <Content>
