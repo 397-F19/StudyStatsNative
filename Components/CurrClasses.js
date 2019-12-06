@@ -9,19 +9,22 @@ const styles = StyleSheet.create({
     fixToText: {
       flexDirection: 'row',
       marginHorizontal: 140
+    },
+    submitButton: {
+      width: 80,
     }
   });
 
 const CurrClasses = ({classes, allClasses}) => {
     // tracks whether assignment completion modal is shown or not
-  
+
     const [showLog, setShowLog] = useState(false);
-  
+
     // tracks the assignment that is clicked for completion
     const [logItem, setLogItem] = useState([{id: "", title: "", assignments: []}, {id: "", title: "", completed: "", responses: []}]);
-  
+
     const handleClose = () => setShowLog(false);
-  
+
     // when you submit an assignment, the new assignment list buttons include all previous assignments
     // minus the one submitted
     const handleSubmit = (currInfo) => {
@@ -45,13 +48,13 @@ const CurrClasses = ({classes, allClasses}) => {
       classes.setClasses(newClasses);
       setShowLog(false);
     }
-  
+
     // when assignment button is clicked, bring up modal and track which class/assignment it is
     const handleShow = (currClass, currAssignment) => {
       setLogItem([currClass, currAssignment]);
       setShowLog(true);
     };
-  
+
     return (
         <Card border="light">
           <CardItem header>
@@ -84,7 +87,7 @@ const CurrClasses = ({classes, allClasses}) => {
                         </Form>
                         </Card>
                         <View style={styles.fixToText}>
-                        <Button onPress={() => handleSubmit(logItem)} primary><Text>Submit</Text></Button>
+                        <Button style={styles.submitButton} onPress={() => handleSubmit(logItem)} primary><Text>Submit</Text></Button>
                         </View>
                       </View>
                     </Modal>
